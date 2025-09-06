@@ -1,7 +1,8 @@
 import random
+from enum import Enum
 
 class BankAccount:
-    def __init__(self, name, balance, isAdmin = False):
+    def __init__(self, name, balance, isAdmin = False, receiveMail = False, receiveSMS = False):
         promo_price = 2000
         acct_number = int(random.random() * 10000000000)
           
@@ -18,10 +19,14 @@ class BankAccount:
         self.acct_number = acct_number
         self.isFrozen = False
         self.isAdmin = isAdmin
+        self.receiveMail = receiveMail
+        self.receiveSMS = receiveSMS
 
     def deposit(self, amount):
         if not self.isFrozen:
             self.balance += amount
+            topUp = True
+            self.message(amount, topUp)
             return "Success"
         else:
             return "Can't Deposit, Account is frozen"
@@ -30,6 +35,8 @@ class BankAccount:
         if not self.isFrozen:
             if amount <= self.balance:
                 self.balance -= amount
+                topUp = False 
+                self.message(amount, topUp)
                 return "Success"
             else:
                 return "Insufficient Funds"
@@ -66,15 +73,39 @@ class BankAccount:
                 return "Account is not frozen"
         else:
             return "Cannot perfom this action"
+    
+    def message(self, amount, topUp):
+        
+        if self.receiveMail:
+            if topUp:
+                print(f"""
+                        MAIL: Credit
+                        {self.name}, you have been credited N{amount}
+                        Balance: {self.balance}
+                      """)
+            else:
+                print(f"""
+                        MAIL: Debit
+                        {self.name}, you have been debited N{amount}
+                        Balance: {self.balance}
+                      """)
 
-# freeze(account)
-#unfree (account)
-#Admin True
-#isAdmin = False
-#isFreezed = False
-joy = BankAccount('Joy', 5000, True)
-tom = BankAccount('Tom', 1000)
-print(tom.deposit(1000))
-print(joy.freeze(tom))
-print(tom.transfer(2000, joy))
-print(joy.unfreeze(tom))
+        if self.receiveSMS:
+            if topUp:
+                print(f"""
+                        SMS: Credit
+                        {self.name}, you have been credited N{amount}
+                        Balance: {self.balance}
+                      """)
+            else:
+                print(f"""
+                        SMS: Debit
+                        {self.name}, you have been debited N{amount}
+                        Balance: {self.balance}
+                      """)
+
+
+joy = BankAccount("Joy", 5000, receiveSMS = True, receiveMail = True)
+tom = BankAccount("Tom", 2000, receiveMail = True, receiveSMS = True)
+
+joy.transfer(700, tom)
