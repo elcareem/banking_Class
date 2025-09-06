@@ -1,5 +1,4 @@
 import random
-from enum import Enum
 
 class BankAccount:
     def __init__(self, name, balance, isAdmin = False, receiveMail = False, receiveSMS = False):
@@ -105,7 +104,3 @@ class BankAccount:
                       """)
 
 
-joy = BankAccount("Joy", 5000, receiveSMS = True, receiveMail = True)
-tom = BankAccount("Tom", 2000, receiveMail = True, receiveSMS = True)
-
-joy.transfer(700, tom)
