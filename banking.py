@@ -22,6 +22,7 @@ class BankAccount:
     def deposit(self, amount):
         if not self.isFrozen:
             self.balance += amount
+            return "Success"
         else:
             return "Can't Deposit, Account is frozen"
 
@@ -40,6 +41,7 @@ class BankAccount:
             tx = self.withdraw(amount)
             if tx == "Success":
                 recipient.deposit(amount)
+                return "Transfer complete"
             else:
                 return tx
         else:
@@ -47,13 +49,23 @@ class BankAccount:
 
     def freeze(self, account):
         if self.isAdmin:
-            if not self.isFrozen:
-                self.isFrozen = True
-                return f"{account.name} is frozen"
+            if not account.isFrozen:
+                account.isFrozen = True
+                return f"{account.name}'s account is frozen"
             else:
                 return "Account is already frozen"
         else:
-            return "Cannot perform this action, require admin privilege"
+            return "Cannot perform this action"
+
+    def unfreeze(self, account):
+        if self.isAdmin:
+            if account.isFrozen:
+                account.isFrozen = False
+                return f"{account.name} is now unfrozen"
+            else:
+                return "Account is not frozen"
+        else:
+            return "Cannot perfom this action"
 
 # freeze(account)
 #unfree (account)
@@ -61,9 +73,8 @@ class BankAccount:
 #isAdmin = False
 #isFreezed = False
 joy = BankAccount('Joy', 5000, True)
-tom = BankAccount('Tom', 0)
-
+tom = BankAccount('Tom', 1000)
+print(tom.deposit(1000))
 print(joy.freeze(tom))
-print(tom.freeze(joy))
-
-print(joy.transfer(1000, tom))
+print(tom.transfer(2000, joy))
+print(joy.unfreeze(tom))
